@@ -10,14 +10,21 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <img src="${cadeau.urlPhoto}" class="img-fluid rounded" alt="${cadeau.titre}">
+                        <c:choose>
+                            <c:when test="${cadeau.urlPhoto.contains('https://')}">
+                                <img src="${cadeau.urlPhoto}" class="img-fluid rounded" alt="${cadeau.titre}">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="${pageContext.request.contextPath}${cadeau.urlPhoto}" class="img-fluid rounded" alt="${cadeau.titre}">
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="col-md-6">
                         <h2>${cadeau.titre}</h2>
-                        <h4 class="text-primary">${cadeau.prix} €</h4>
+                        <h4 class="text-primary">${cadeau.prix} $CAD</h4>
                         <hr>
                         <div class="d-grid gap-2 mt-4">
-                            <a href="${pageContext.request.contextPath}/evenement/creer" class="btn btn-success">Créer un événement avec ce cadeau</a>
+                            <a href="${pageContext.request.contextPath}/evenement/creer?idCadeau=${cadeau.id}" class="btn btn-success">Créer un événement avec ce cadeau</a>
                         </div>
                     </div>
                 </div>

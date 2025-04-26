@@ -1,20 +1,49 @@
 package com.projet.miniprojet2.utils;
 
+import com.projet.miniprojet2.models.Utilisateur;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class EmailUtils {
 
-    // Adresse email de l'expéditeur
-    private static final String EMAIL_FROM = "teamgifts@example.com";
-    // Mot de passe de l'adresse email de l'expéditeur
-    private static final String EMAIL_PASSWORD = "motdepasse";
-    // Hôte SMTP pour l'envoi des emails
-    private static final String SMTP_HOST = "smtp.example.com";
-    // Port SMTP utilisé pour l'envoi des emails
-    private static final String SMTP_PORT = "587";
+    // Variables pour stocker les informations d'identification
+    private static String EMAIL_FROM;
+    private static String EMAIL_PASSWORD;
+    private static String SMTP_HOST;
+    private static String SMTP_PORT;
+
+    // Bloc statique pour charger les propriétés au démarrage
+    static {
+        try {
+            loadProperties();
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement des propriétés email: " + e.getMessage());
+        }
+    }
+
+    // Méthode pour charger les propriétés depuis le fichier
+    private static void loadProperties() throws IOException {
+        Properties props = new Properties();
+        try (InputStream input = EmailUtils.class.getClassLoader().getResourceAsStream("config/email.properties")) {
+            if (input == null) {
+                System.err.println("Impossible de trouver config/email.properties");
+                return;
+            }
+
+            // Chargement des propriétés
+            props.load(input);
+
+            // Récupération des valeurs
+            EMAIL_FROM = props.getProperty("email.from");
+            EMAIL_PASSWORD = props.getProperty("email.password");
+            SMTP_HOST = props.getProperty("email.smtp.host");
+            SMTP_PORT = props.getProperty("email.smtp.port");
+        }
+    }
 
     // Méthode pour envoyer un email générique
     public static void envoyerEmail(String destinataire, String sujet, String contenu) throws MessagingException {
@@ -45,15 +74,18 @@ public class EmailUtils {
     }
 
     // Méthode pour envoyer une invitation à un événement
-    public static void envoyerInvitation(String destinataire, String titreEvenement, String organisateur,
+    public static void envoyerInvitation(Utilisateur destinataire, String titreEvenement, String organisateur,
             Long idEvenement)
             throws MessagingException {
         // Sujet de l'email d'invitation
         String sujet = "Invitation à participer à l'événement : " + titreEvenement;
 
         // Liens pour accepter ou refuser l'invitation
-        String lienAcceptation = "http://localhost:8080/mini-projet2/invitation?action=accepter&id=" + idEvenement;
-        String lienRefus = "http://localhost:8080/mini-projet2/invitation?action=refuser&id=" + idEvenement;
+        String lienAcceptation = "http://localhost:3002/mini_projet2_war_exploded/invitation?action=accepter&id="
+                + idEvenement
+                + "&idParticipant=" + destinataire.getId();
+        String lienRefus = "http://localhost:3002/mini_projet2_war_exploded/invitation?action=refuser&id=" + idEvenement
+                + "&idParticipant=" + destinataire.getId();
 
         // Contenu HTML de l'email d'invitation
         String contenu = "<html><body>"
@@ -66,6 +98,33 @@ public class EmailUtils {
                 + "</body></html>";
 
         // Envoi de l'email d'invitation
-        envoyerEmail(destinataire, sujet, contenu);
+        envoyerEmail(destinataire.getCourriel(), sujet, contenu);
+    }
+
+    // Méthode pour envoyer une invitation à un événement avec email en paramètre
+    public static void envoyerInvitation(String destinataireEmail, String titreEvenement, String organisateur,
+            Long idEvenement)
+            throws MessagingException {
+        // Sujet de l'email d'invitation
+        String sujet = "Invitation à participer à l'événement : " + titreEvenement;
+
+        // Liens pour accepter ou refuser l'invitation
+        String lienAcceptation = "http://localhost:3002/mini_projet2_war_exploded/invitation?action=accepter&id="
+                + idEvenement;
+        String lienRefus = "http://localhost:3002/mini_projet2_war_exploded/invitation?action=refuser&id="
+                + idEvenement;
+
+        // Contenu HTML de l'email d'invitation
+        String contenu = "<html><body>"
+                + "<h2>Invitation à participer à un cadeau commun</h2>"
+                + "<p>" + organisateur + " vous invite à participer à l'achat d'un cadeau pour l'événement : <strong>"
+                + titreEvenement + "</strong></p>"
+                + "<p>Pour répondre à cette invitation, veuillez cliquer sur l'un des liens suivants :</p>"
+                + "<p><a href='" + lienAcceptation + "'>Accepter l'invitation</a></p>"
+                + "<p><a href='" + lienRefus + "'>Refuser l'invitation</a></p>"
+                + "</body></html>";
+
+        // Envoi de l'email d'invitation
+        envoyerEmail(destinataireEmail, sujet, contenu);
     }
 }

@@ -17,11 +17,19 @@
         <c:forEach var="cadeau" items="${cadeaux}">
             <div class="col">
                 <div class="card h-100">
-                    <img src="${cadeau.urlPhoto}" class="card-img-top" alt="${cadeau.titre}">
+          
+                    <c:choose>
+                        <c:when test="${cadeau.urlPhoto.contains('https://')}">
+                            <img src="${cadeau.urlPhoto}" class="card-img-top" alt="${cadeau.titre}" style="height: 200px; object-fit: cover;">
+                        </c:when>
+                        <c:otherwise>
+                            <img src="${pageContext.request.contextPath}${cadeau.urlPhoto}" class="card-img-top" alt="${cadeau.titre}" style="height: 200px; object-fit: cover;">
+                        </c:otherwise>
+                    </c:choose>
                     <div class="card-body">
                         <h5 class="card-title">${cadeau.titre}</h5>
                         <p class="card-text">
-                            <strong>Prix:</strong> ${cadeau.prix} €
+                            <strong>Prix:</strong> ${cadeau.prix} $CAD
                         </p>
                     </div>
                     <div class="card-footer">

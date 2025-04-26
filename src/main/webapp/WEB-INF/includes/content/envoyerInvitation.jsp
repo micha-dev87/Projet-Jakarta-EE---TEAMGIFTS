@@ -14,7 +14,7 @@
                     <p><strong>Titre:</strong> ${evenement.titre}</p>
                     <p><strong>Date:</strong> <fmt:formatDate value="${evenement.dateEvenement}" pattern="dd/MM/yyyy" /></p>
                     <p><strong>Cadeau:</strong> ${evenement.cadeau.titre}</p>
-                    <p><strong>Prix:</strong> ${evenement.cadeau.prix} €</p>
+                    <p><strong>Prix:</strong> ${evenement.cadeau.prix} $CAD</p>
                 </div>
                 
                 <c:if test="${not empty message}">
@@ -84,7 +84,10 @@
                                                 </c:otherwise>
                                             </c:choose>
                                         </td>
-                                        <td>${invitation.contribution} €</td>
+                                        <td>${invitation.contribution} $CAD</td>
+                                        <td>
+                                            <a href="${pageContext.request.contextPath}/invitation/supprimer?id=${invitation.id}" class="btn btn-danger">Supprimer</a>
+                                        </td>
                                     </tr>
                                 </c:forEach>
                             </tbody>

@@ -2,8 +2,11 @@ package com.projet.miniprojet2.servlets;
 
 import com.projet.miniprojet2.dao.CadeauDAO;
 import com.projet.miniprojet2.dao.EvenementDAO;
+import com.projet.miniprojet2.dao.UtilisateurDAO;
+import com.projet.miniprojet2.dao.InvitationDAO;
 import com.projet.miniprojet2.models.Cadeau;
 import com.projet.miniprojet2.models.Evenement;
+import com.projet.miniprojet2.models.Invitation;
 import com.projet.miniprojet2.models.Utilisateur;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,10 +27,17 @@ public class EvenementServlet extends HttpServlet {
     private final EvenementDAO evenementDAO = new EvenementDAO();
     // DAO pour interagir avec les cadeaux dans la base de données
     private final CadeauDAO cadeauDAO = new CadeauDAO();
+    // DAO pour interagir avec les utilisateurs dans la base de données
+    private final UtilisateurDAO utilisateurDAO = new UtilisateurDAO();
+    // DAO pour interagir avec les invitations dans la base de données
+    private final InvitationDAO invitationDAO = new InvitationDAO();
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        
         // Vérification de la session utilisateur
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("utilisateur") == null) {
@@ -94,8 +104,21 @@ public class EvenementServlet extends HttpServlet {
             throws ServletException, IOException {
         // Récupération de la liste des cadeaux
         List<Cadeau> cadeaux = cadeauDAO.findAll();
+
+        String idCadeaustr = request.getParameter("idCadeau");
+        Cadeau cadeauParDefaut = null;
+
+        // get id of cadeau dans le lien ?idCadeau=
+       if(idCadeaustr != null) {
+          Long idCadeauParDefaut = Long.parseLong(idCadeaustr);
+           // Valeur cadeau par défaut
+           cadeauParDefaut = cadeauDAO.findById(idCadeauParDefaut);
+        }
+
+
         // Mise en place des attributs pour le formulaire de création d'événement
         request.setAttribute("cadeaux", cadeaux);
+        request.setAttribute("cadeauParDefaut", cadeauParDefaut);
         request.setAttribute("titre", "Créer un Événement");
         request.setAttribute("contenu", "/WEB-INF/includes/content/creerEvenement.jsp");
         request.getRequestDispatcher("/WEB-INF/templates/template.jsp").forward(request, response);

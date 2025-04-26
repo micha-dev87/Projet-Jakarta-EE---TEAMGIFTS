@@ -42,8 +42,9 @@
                                 <c:set var="totalContributions" value="${totalContributions + inv.contribution}" />
                             </c:forEach>
                             
-                            <p><strong>Montant collecté:</strong> ${totalContributions} € (${Math.round((totalContributions / invitation.evenement.cadeau.prix) * 100)}%)</p>
-                            <p><strong>Montant restant:</strong> ${invitation.evenement.cadeau.prix - totalContributions > 0 ? invitation.evenement.cadeau.prix - totalContributions : 0} €</p>
+                            <c:set var="percentage" value="${(totalContributions.doubleValue() / invitation.evenement.cadeau.prix.doubleValue()) * 100}" />
+                            <p><strong>Montant collecté:</strong> ${totalContributions} $CAD (<fmt:formatNumber value="${percentage}" pattern="#0.0"/>%)</p>
+                            <p><strong>Montant restant:</strong> ${invitation.evenement.cadeau.prix - totalContributions > 0 ? invitation.evenement.cadeau.prix - totalContributions : 0} $CAD</p>
                             
                             <div class="progress mb-3">
                                 <c:set var="progress" value="${(totalContributions / invitation.evenement.cadeau.prix) * 100}" />

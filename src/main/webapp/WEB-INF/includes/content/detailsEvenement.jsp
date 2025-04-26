@@ -31,7 +31,7 @@
                         <div class="col-md-8">
                             <div class="card-body">
                                 <h5 class="card-title">${evenement.cadeau.titre}</h5>
-                                <p class="card-text"><strong>Prix:</strong> ${evenement.cadeau.prix} €</p>
+                                <p class="card-text"><strong>Prix:</strong> ${evenement.cadeau.prix} $CAD</p>
                             </div>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
-                                <td>${invitation.contribution} €</td>
+                                <td>${invitation.contribution} $CAD</td>
                             </tr>
                         </c:forEach>
                         <c:if test="${empty evenement.invitations}">
@@ -81,7 +81,7 @@
                                     <c:forEach var="invitation" items="${evenement.invitations}">
                                         <c:set var="totalContributions" value="${totalContributions + invitation.contribution}" />
                                     </c:forEach>
-                                    ${totalContributions} € / ${evenement.cadeau.prix} €
+                                    ${totalContributions} $CAD / ${evenement.cadeau.prix} $CAD
                                 </td>
                             </tr>
                         </tfoot>
@@ -116,8 +116,8 @@
                     </div>
                 </div>
                 
-                <p><strong>Montant collecté:</strong> ${totalContributions} €</p>
-                <p><strong>Montant restant:</strong> ${evenement.cadeau.prix - totalContributions > 0 ? evenement.cadeau.prix - totalContributions : 0} €</p>
+                <p><strong>Montant collecté:</strong> ${totalContributions} $CAD</p>
+                <p><strong>Montant restant:</strong> ${evenement.cadeau.prix - totalContributions > 0 ? evenement.cadeau.prix - totalContributions : 0} $CAD</p>
                 
                 <c:set var="acceptes" value="0" />
                 <c:set var="refuses" value="0" />

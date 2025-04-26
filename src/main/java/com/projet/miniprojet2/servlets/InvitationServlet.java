@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-@WebServlet(name = "InvitationServlet", urlPatterns = { "/invitations", "/invitation/envoyer", "/invitation", "/invitation/contribuer" })
+@WebServlet(name = "InvitationServlet", urlPatterns = { "/invitations", "/invitation/envoyer", "/invitation", "/invitation/contribuer", "/invitation/supprimer" })
 public class InvitationServlet extends HttpServlet {
 
     // DAO pour interagir avec les invitations dans la base de données
@@ -48,6 +48,7 @@ public class InvitationServlet extends HttpServlet {
             case "/invitation/contribuer":
                 showContribuerForm(request, response);
                 break;
+    
             default:
                 response.sendRedirect(request.getContextPath() + "/evenements");
                 break;
@@ -68,6 +69,10 @@ public class InvitationServlet extends HttpServlet {
             case "/invitation/contribuer":
                 contribuer(request, response);
                 break;
+            case "/invitation/supprimer":
+                supprimerInvitation(request, response);
+                break;
+
             default:
                 response.sendRedirect(request.getContextPath() + "/evenements");
                 break;
@@ -93,6 +98,43 @@ public class InvitationServlet extends HttpServlet {
         request.setAttribute("titre", "Mes Invitations");
         request.setAttribute("contenu", "/WEB-INF/includes/content/invitations.jsp");
         request.getRequestDispatcher("/WEB-INF/templates/template.jsp").forward(request, response);
+    }
+
+    private void supprimerInvitation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Vérification de la session utilisateur
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("utilisateur") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        // Récupération de l'identifiant de l'invitation
+        String idStr = request.getParameter("id");
+        if (idStr == null || idStr.isEmpty()) {
+            System.out.println("idStr is null or empty");
+            response.sendRedirect(request.getContextPath() + "/invitations");
+            return;
+        }
+
+        try {
+            Long id = Long.parseLong(idStr);
+            Invitation invitation = invitationDAO.findById(id);
+
+            if (invitation == null) {
+                response.sendRedirect(request.getContextPath() + "/invitations");
+                return;
+            }
+
+          
+
+            // Suppression de l'invitation
+            invitationDAO.delete(invitation);
+
+            response.sendRedirect(request.getContextPath() + "/invitations");
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/invitations");
+        }
     }
 
     private void showEnvoyerInvitationForm(HttpServletRequest request, HttpServletResponse response)
@@ -203,7 +245,7 @@ public class InvitationServlet extends HttpServlet {
             // Envoyer l'email d'invitation
             try {
                 EmailUtils.envoyerInvitation(
-                        participant.getCourriel(),
+                        participant,
                         evenement.getTitre(),
                         organisateur.getNomComplet(),
                         evenement.getId());
@@ -232,8 +274,9 @@ public class InvitationServlet extends HttpServlet {
         // Récupération des paramètres de la requête
         String action = request.getParameter("action");
         String idStr = request.getParameter("id");
+        String idParticipantStr = request.getParameter("idParticipant");
 
-        if (action == null || idStr == null) {
+        if (action == null || idStr == null || idParticipantStr == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -241,33 +284,34 @@ public class InvitationServlet extends HttpServlet {
         try {
             Long evenementId = Long.parseLong(idStr);
             Evenement evenement = evenementDAO.findById(evenementId);
+            Long idParticipant = Long.parseLong(idParticipantStr);
+                // recuperer le participant
+            Utilisateur participant = utilisateurDAO.findById(idParticipant);
 
-            if (evenement == null) {
+            if (evenement == null || participant == null) {
                 response.sendRedirect(request.getContextPath() + "/login");
                 return;
             }
 
-            // Si l'utilisateur n'est pas connecté, le rediriger vers la page de connexion
-            HttpSession session = request.getSession(false);
-            if (session == null || session.getAttribute("utilisateur") == null) {
-                // Stocker les paramètres dans la session pour les récupérer après la connexion
-                session = request.getSession(true);
-                session.setAttribute("redirectAction", action);
-                session.setAttribute("redirectEvenementId", evenementId);
-
-                response.sendRedirect(request.getContextPath() + "/login");
-                return;
-            }
-
-            // Récupération de l'utilisateur connecté
-            Utilisateur participant = (Utilisateur) session.getAttribute("utilisateur");
             // Récupération de l'invitation pour l'utilisateur et l'événement
             Invitation invitation = invitationDAO.findByEvenementAndParticipant(evenement, participant);
-
             if (invitation == null) {
                 response.sendRedirect(request.getContextPath() + "/login");
                 return;
             }
+
+            // Si l'utilisateur n'est pas connecté, le connecter automatiquement
+            HttpSession session = request.getSession(false);
+            if (session == null || session.getAttribute("utilisateur") == null) {
+                // definir une session pour le participant
+                session = request.getSession(true);
+                session.setAttribute("utilisateur", participant);
+       
+            }
+
+          
+          
+            
 
             // Gestion de la réponse à l'invitation
             if ("accepter".equals(action)) {
@@ -284,6 +328,7 @@ public class InvitationServlet extends HttpServlet {
             } else {
                 response.sendRedirect(request.getContextPath() + "/login");
             }
+
 
         } catch (NumberFormatException e) {
             response.sendRedirect(request.getContextPath() + "/login");

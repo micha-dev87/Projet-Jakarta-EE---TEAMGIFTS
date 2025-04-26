@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <div class="row justify-content-center">
     <div class="col-md-8">
@@ -26,9 +27,17 @@
                     <div class="mb-3">
                         <label for="cadeauId" class="form-label">Cadeau</label>
                         <select class="form-select" id="cadeauId" name="cadeauId" required>
-                            <option value="">Sélectionnez un cadeau</option>
+                           
+                            <c:choose>
+                                <c:when test="${not empty cadeauParDefaut}">
+                                    <option value="${cadeauParDefaut.id}">${cadeauParDefaut.titre} - ${cadeauParDefaut.prix} $CAD</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="">Sélectionnez un cadeau</option>
+                                </c:otherwise>
+                            </c:choose>
                             <c:forEach var="cadeau" items="${cadeaux}">
-                                <option value="${cadeau.id}">${cadeau.titre} - ${cadeau.prix} €</option>
+                                <option value="${cadeau.id}">${cadeau.titre} - ${cadeau.prix} $CAD</option>
                             </c:forEach>
                         </select>
                     </div>

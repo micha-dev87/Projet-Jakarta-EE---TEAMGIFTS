@@ -55,7 +55,7 @@
                                             <td><fmt:formatDate value="${invitation.evenement.dateEvenement}" pattern="dd/MM/yyyy" /></td>
                                             <td>${invitation.evenement.utilisateur.nomComplet}</td>
                                             <td>${invitation.evenement.cadeau.titre}</td>
-                                            <td>${invitation.evenement.cadeau.prix} €</td>
+                                            <td>${invitation.evenement.cadeau.prix} $CAD</td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="${pageContext.request.contextPath}/invitation?action=accepter&id=${invitation.evenement.id}" class="btn btn-success btn-sm">Accepter</a>
@@ -100,8 +100,8 @@
                                             <td><fmt:formatDate value="${invitation.evenement.dateEvenement}" pattern="dd/MM/yyyy" /></td>
                                             <td>${invitation.evenement.utilisateur.nomComplet}</td>
                                             <td>${invitation.evenement.cadeau.titre}</td>
-                                            <td>${invitation.evenement.cadeau.prix} €</td>
-                                            <td>${invitation.contribution} €</td>
+                                            <td>${invitation.evenement.cadeau.prix} $CAD</td>
+                                            <td>${invitation.contribution} $CAD</td>
                                             <td>
                                                 <a href="${pageContext.request.contextPath}/invitation/contribuer?id=${invitation.id}" class="btn btn-primary btn-sm">Contribuer</a>
                                             </td>
@@ -142,7 +142,7 @@
                                             <td><fmt:formatDate value="${invitation.evenement.dateEvenement}" pattern="dd/MM/yyyy" /></td>
                                             <td>${invitation.evenement.utilisateur.nomComplet}</td>
                                             <td>${invitation.evenement.cadeau.titre}</td>
-                                            <td>${invitation.evenement.cadeau.prix} €</td>
+                                            <td>${invitation.evenement.cadeau.prix} $CAD</td>
                                             <td>
                                                 <a href="${pageContext.request.contextPath}/invitation?action=accepter&id=${invitation.evenement.id}" class="btn btn-outline-success btn-sm">Changer d'avis</a>
                                             </td>

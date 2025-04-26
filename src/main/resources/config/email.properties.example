@@ -1,0 +1,6 @@
+# Configuration du courrier électronique
+# Copier ce fichier vers email.properties et ajuster les valeurs
+email.from=votre-email@exemple.com
+email.password=mot-de-passe-securise
+email.smtp.host=smtp.exemple.com
+email.smtp.port=587 

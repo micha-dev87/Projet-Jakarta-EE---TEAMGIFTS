@@ -27,7 +27,7 @@
                             <strong>Cadeau:</strong> ${evenement.cadeau.titre}
                         </p>
                         <p class="card-text">
-                            <strong>Prix:</strong> ${evenement.cadeau.prix} €
+                            <strong>Prix:</strong> ${evenement.cadeau.prix} $CAD
                         </p>
                     </div>
                     <div class="card-footer">

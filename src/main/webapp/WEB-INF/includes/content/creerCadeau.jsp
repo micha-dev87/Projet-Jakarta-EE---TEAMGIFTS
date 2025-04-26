@@ -14,19 +14,19 @@
                     </div>
                 </c:if>
                 
-                <form action="${pageContext.request.contextPath}/cadeau/creer" method="post">
+                <form action="${pageContext.request.contextPath}/cadeau/creer" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="titre" class="form-label">Titre</label>
                         <input type="text" class="form-control" id="titre" name="titre" required>
                     </div>
                     <div class="mb-3">
-                        <label for="prix" class="form-label">Prix (€)</label>
+                        <label for="prix" class="form-label">Prix ($CAD)</label>
                         <input type="number" step="0.01" min="0" class="form-control" id="prix" name="prix" required>
                     </div>
                     <div class="mb-3">
-                        <label for="urlPhoto" class="form-label">URL de la photo</label>
-                        <input type="url" class="form-control" id="urlPhoto" name="urlPhoto" required>
-                        <div class="form-text">Entrez l'URL d'une image en ligne.</div>
+                        <label for="photo" class="form-label">Photo du cadeau</label>
+                        <input type="file" class="form-control" id="photo" name="photo" accept="image/*" required>
+                        <div class="form-text">Sélectionnez une image pour le cadeau.</div>
                     </div>
                     
                     <div class="d-flex justify-content-between">

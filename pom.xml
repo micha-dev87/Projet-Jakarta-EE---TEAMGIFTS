@@ -68,6 +68,13 @@
             <version>2.0.1</version>
         </dependency>
 
+        <!-- JSON-B -->
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>
